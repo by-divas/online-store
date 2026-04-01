@@ -77,13 +77,15 @@ function checkout() {
   let text = `*DIVAS SNACK AND PASTRIES*%0A`;
   text += `--------------------------%0A`;
   text += `*Nama:* ${name}%0A`;
-  text += `*Alamat:* ${adress}`
+  text += `*Alamat:* ${adress}%0A`;
   text += `*Metode:* ${payment}%0A%0A`;
   text += `*Daftar Pesanan:*%0A`;
   
   cart.forEach(item => {
     text += `• ${item.name} (x${item.qty})%0A`;
   });
+
+  text += `--------------------------%0A`;
   
   const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
   text += `%0A*Total Bayar: Rp ${total.toLocaleString('id-ID')}*%0A`;
@@ -94,8 +96,6 @@ function checkout() {
   }
 
   
-  text += `--------------------------%0A`;
-  text += `_Kirim pesan ini_`;
   
   window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
 }
