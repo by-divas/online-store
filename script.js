@@ -66,6 +66,7 @@ function checkout() {
   if (cart.length < 1) return alert("Keranjang masih kosong!");
   
   const name = document.getElementById("buyerName").value;
+  const adress = document.getElementById("buyerAddress").value;
   const payment = document.getElementById("paymentMethod").value;
   const note = document.getElementById("buyerNote").value;
   
@@ -76,6 +77,7 @@ function checkout() {
   let text = `*DIVAS SNACK AND PASTRIES*%0A`;
   text += `--------------------------%0A`;
   text += `*Nama:* ${name}%0A`;
+  text += `*Alamat:* ${adress}`
   text += `*Metode:* ${payment}%0A%0A`;
   text += `*Daftar Pesanan:*%0A`;
   
@@ -91,6 +93,9 @@ function checkout() {
     text += `*Catatan:* ${note}%0A`;
   }
 
+  
+  text += `--------------------------%0A`;
+  text += `_Kirim pesan ini_`;
   
   window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
 }
