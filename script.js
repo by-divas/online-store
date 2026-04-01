@@ -62,40 +62,90 @@ function removeItem(name) {
   renderCart();
 }
 
+function makeOrderId() {
+  // Generate like: DIVAS-0401-K9F2
+  const today = new Date();
+  
+  // Gets MM/DD format
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const dateStr = `${month}${day}`;
+  
+  // Generates 4 random alphanumeric characters
+  const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
+  
+  return `DIVAS-${dateStr}-${randomStr}`;
+}
+
+// Paste your copied Web App URL here
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwSXgXjRS7P0UeMgzTnkj4m50SDS3dwF8QcSMBelAq1BmplxaeKPzw0KAks9Lj48lygMw/exec";
+
 function checkout() {
-  if (cart.length < 1) return alert("Keranjang masih kosong!");
+  if (cart.length < 1) return alert("Keranjang masih kosong!");
+  
+  const name = document.getElementById("buyerName").value;
+  const custPhone = document.getElementById("buyerNumber").value;
+  const adress = document.getElementById("buyerAddress").value;
+  const payment = document.getElementById("paymentMethod").value;
+  const note = document.getElementById("buyerNote").value;
+  
+  if (!name || !payment) {
+    return alert("Harap isi Nama dan Metode Pembayaran ya.");
+  }
+
+  const orderId = makeOrderId(); // Called properly with parentheses
+  const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
   
-  const name = document.getElementById("buyerName").value;
-  const adress = document.getElementById("buyerAddress").value;
-  const payment = document.getElementById("paymentMethod").value;
-  const note = document.getElementById("buyerNote").value;
-  
-  if (!name || !payment) {
-    return alert("Harap isi Nama dan Metode Pembayaran ya.");
-  }
-  
-  let text = `*DIVAS SNACK AND PASTRIES*%0A`;
-  text += `--------------------------%0A`;
-  text += `*Nama:* ${name}%0A`;
-  text += `*Alamat:* ${adress}%0A`;
-  text += `*Metode:* ${payment}%0A%0A`;
-  text += `*Daftar Pesanan:*%0A`;
-  
-  cart.forEach(item => {
-    text += `• ${item.name} (x${item.qty})%0A`;
+  // Create a readable string of items for the sheet
+  const itemsSummary = cart.map(item => `${item.name} (x${item.qty})`).join(", ");
+
+  // 1. Send the data to Google Sheets
+  fetch(GOOGLE_SHEET_URL, {
+    method: "POST",
+    mode: "no-cors", // Required to avoid CORS blocks with Google Web Apps
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      orderId: orderId,
+      name: name,
+      phone: custPhone,
+      address: adress,
+      payment: payment,
+      items: itemsSummary,
+      total: total,
+      note: note
+    })
+  }).then(() => {
+    console.log("Order recorded in Google Sheets!");
+  }).catch(err => {
+    console.error("Failed to record order:", err);
   });
 
-  text += `--------------------------%0A`;
-  
-  const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-  text += `%0A*Total Bayar: Rp ${total.toLocaleString('id-ID')}*%0A`;
-  
-  if (note.trim() !== "") {
-    text += `--------------------------%0A`;
-    text += `*Catatan:* ${note}%0A`;
-  }
+  // 2. Build the WhatsApp text and open it
+  let text = `*DIVAS SNACK AND PASTRIES*%0A`;
+  text += `--------------------------%0A`;
+  text += `*Nama:* ${name}%0A`;
+  text += `*Nomor Handphone:* ${custPhone}%0A`;
+  text += `*Alamat:* ${adress}%0A`;
+  text += `*Metode:* ${payment}%0A%0A`;
+  text += `*Daftar Pesanan:*%0A`;
+  
+  cart.forEach(item => {
+    text += `• ${item.name} (x${item.qty})%0A`;
+  });
 
-  
-  
-  window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
+  text += `--------------------------%0A`;
+  text += `%0A*Total Bayar: Rp ${total.toLocaleString('id-ID')}*%0A`;
+  
+  if (note.trim() !== "") {
+    text += `--------------------------%0A`;
+    text += `*Catatan:* ${note}%0A`;
+  }
+
+  text += `--------------------------%0A`;
+  text += `JANGAN HAPUS TEKS DIBAWAH⚠️‼️%0A`;
+  text += `${orderId}`; // Used the generated ID
+  
+  window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
 }
