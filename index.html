@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diva's Snack and Pastries</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <h1>Diva's Snack and Pastries</h1>
+    <p></p>
+  </div>
+</header>
+
+<section class="products">
+  <div class="card best-seller">
+    <span class="badge">🔥 Best Seller</span>
+    <img src="./assets/product/product.jpg" alt="Coklat">
+    <h3>Bolu Sultan</h3>
+    <span class="price">30.000</span>
+    <button onclick="addToCart('Bolu Sultan', 30000)">Tambah</button>
+  </div>
+
+  <div class="card best-seller">
+    <span class="badge">🔥 Best Seller</span>
+    <img src="./assets/product/product.jpg" alt="Matcha">
+    <h3>Rasa Matcha</h3>
+    <span class="price">2.500</span>
+    <button onclick="addToCart('Rasa Matcha', 2500)">Tambah</button>
+  </div>
+
+  <div class="card">
+    <img src="./assets/product/product.jpg" alt="Keju">
+    <h3>Rasa Keju</h3>
+    <span class="price">2.500</span>
+    <button onclick="addToCart('Rasa Keju', 2500)">Tambah</button>
+  </div>
+
+<div id="cartButton" onclick="toggleCart()">
+  🛒 Keranjang <span id="cartCount">0</span>
+</div>
+
+<div id="modalOverlay" onclick="toggleCart()"></div>
+
+<div id="cartModal">
+  <h2>Keranjang Belanja</h2>
+  <ul id="cartItems"></ul>
+  
+  <div class="cart-summary">
+    <p>Total: <strong>Rp <span id="totalPrice">0</span></strong></p>
+  </div>
+
+  <div class="input-form">
+    <div class="input-group">
+      <label>Nama Pembeli:</label>
+      <input type="text" id="buyerName" placeholder="Masukkan nama Anda">
+    </div>
+
+    <div class="input-group">
+      <label>Alamat Pengiriman</label>
+      <input type="text" id="buyerAdress" placeholder="Masukan alamat anda">
+    </div>
+    
+    <div class="input-group">
+      <label>Metode Pembayaran:</label>
+      <select id="paymentMethod">
+          <option value="">-- Pilih metode pembayaran --</option>
+          <option value="CASH">CASH</option>
+          <option value="TRANSFER BANK">TRANSFER BANK</option>
+          <option value="QRIS">QRIS</option>
+          <option value="DANA">DANA</option>
+          <option value="OVO">OVO</option>
+          <option value="GOPAY">GOPAY</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label>Catatan Pembeli (opsional):</label>
+      <textarea id="buyerNote" placeholder="Contoh: Kurangi gula / Alamat pengiriman"></textarea>
+    </div>
+  </div>
+  
+  <button class="btn-checkout" onclick="checkout()">Checkout via WhatsApp</button>
+  <button class="btn-close" onclick="toggleCart()">Tutup</button>
+</div>
+
+<footer class="footer">
+    <p>© 2026 Web By Divzz. | Summo 🥛</p>
+</footer>   
+
+<script src="script.js"></script>
+</body>
+</html>
